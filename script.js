@@ -110,6 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Guestbook Logic (Firebase Firestore)
     const wishForm = document.getElementById('wish-form');
     const wishesList = document.getElementById('wishes-list');
+    const paginationControls = document.getElementById('pagination-controls');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const pageInfo = document.getElementById('page-info');
+
+    let allWishes = [];
+    let currentPage = 1;
+    const wishesPerPage = 5;
 
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -119,15 +127,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function renderWishes(wishes) {
+    function updatePagination() {
+        const totalPages = Math.ceil(allWishes.length / wishesPerPage) || 1;
+        
+        pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
+        
+        btnPrev.disabled = currentPage === 1;
+        btnNext.disabled = currentPage === totalPages;
+
+        if (totalPages <= 1) {
+            paginationControls.style.display = 'none';
+        } else {
+            paginationControls.style.display = 'flex';
+        }
+    }
+
+    function renderWishesPage() {
         wishesList.innerHTML = '';
         
-        if (wishes.length === 0) {
+        if (allWishes.length === 0) {
             wishesList.innerHTML = '<p style="text-align:center; color:var(--clr-text-secondary)">Hãy là người đầu tiên gửi lời chúc nhé! ✨</p>';
+            if(paginationControls) paginationControls.style.display = 'none';
             return;
         }
 
-        wishes.forEach(wish => {
+        const startIndex = (currentPage - 1) * wishesPerPage;
+        const endIndex = startIndex + wishesPerPage;
+        const wishesToShow = allWishes.slice(startIndex, endIndex);
+
+        wishesToShow.forEach(wish => {
             const wishEl = document.createElement('div');
             wishEl.className = 'wish-item';
             wishEl.innerHTML = `
@@ -141,6 +169,27 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             wishesList.appendChild(wishEl);
         });
+
+        if(paginationControls) updatePagination();
+    }
+
+    if (btnPrev && btnNext) {
+        btnPrev.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderWishesPage();
+                document.getElementById('wishes').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            const totalPages = Math.ceil(allWishes.length / wishesPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderWishesPage();
+                document.getElementById('wishes').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
     }
 
     // Real-time listener from Firestore
@@ -148,11 +197,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const q = query(wishesCol, orderBy("time", "desc"));
     
     onSnapshot(q, (snapshot) => {
-        const wishes = [];
+        allWishes = [];
         snapshot.forEach((doc) => {
-            wishes.push(doc.data());
+            allWishes.push(doc.data());
         });
-        renderWishes(wishes);
+        
+        const newTotalPages = Math.ceil(allWishes.length / wishesPerPage) || 1;
+        if (currentPage > newTotalPages) {
+            currentPage = newTotalPages;
+        }
+        
+        renderWishesPage();
     }, (error) => {
         console.error("Lỗi khi tải lời chúc từ Firebase: ", error);
         wishesList.innerHTML = '<p style="text-align:center; color:#D67D89">Chưa thể kết nối máy chủ Firebase. Bạn vui lòng thử lại sau nhé!</p>';
