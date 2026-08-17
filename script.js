@@ -1,3 +1,20 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBS_hA2xSg_cafIRB0pmGevmZQ6X4gI-cU",
+  authDomain: "graduate-qc.firebaseapp.com",
+  projectId: "graduate-qc",
+  storageBucket: "graduate-qc.firebasestorage.app",
+  messagingSenderId: "326981237355",
+  appId: "1:326981237355:web:86d7a7456a1fc69e69cf2e",
+  measurementId: "G-BDH58YQ0HD"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const wishesCol = collection(db, "wishes");
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Intersection Observer for Scroll Reveal
     const fadeElements = document.querySelectorAll('.fade-up');
@@ -90,26 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 3. Guestbook Logic (Local Storage)
+    // 3. Guestbook Logic (Firebase Firestore)
     const wishForm = document.getElementById('wish-form');
     const wishesList = document.getElementById('wishes-list');
-    const STORAGE_KEY = 'quynhchi_graduation_wishes_v2';
-
-    // Mock initial data if empty
-    const defaultWishes = [
-        {
-            name: "Anh Hùng",
-            message: "Chúc mừng em gái tốt nghiệp! Chúc em chặng đường sắp tới luôn rực rỡ và thành công nhé.",
-            time: new Date().toISOString()
-        }
-    ];
-
-    function loadWishes() {
-        const savedWishes = localStorage.getItem(STORAGE_KEY);
-        let wishes = savedWishes ? JSON.parse(savedWishes) : defaultWishes;
-        if (!savedWishes) localStorage.setItem(STORAGE_KEY, JSON.stringify(wishes));
-        renderWishes(wishes);
-    }
 
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -121,11 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderWishes(wishes) {
         wishesList.innerHTML = '';
-        const sortedWishes = [...wishes].sort((a, b) => new Date(b.time) - new Date(a.time));
+        
+        if (wishes.length === 0) {
+            wishesList.innerHTML = '<p style="text-align:center; color:var(--clr-text-secondary)">Hãy là người đầu tiên gửi lời chúc nhé! ✨</p>';
+            return;
+        }
 
-        if (sortedWishes.length === 0) return;
-
-        sortedWishes.forEach(wish => {
+        wishes.forEach(wish => {
             const wishEl = document.createElement('div');
             wishEl.className = 'wish-item';
             wishEl.innerHTML = `
@@ -141,7 +143,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    wishForm.addEventListener('submit', (e) => {
+    // Real-time listener from Firestore
+    wishesList.innerHTML = '<p style="text-align:center; color:var(--clr-text-secondary)">Đang tải lời chúc... 💌</p>';
+    const q = query(wishesCol, orderBy("time", "desc"));
+    
+    onSnapshot(q, (snapshot) => {
+        const wishes = [];
+        snapshot.forEach((doc) => {
+            wishes.push(doc.data());
+        });
+        renderWishes(wishes);
+    }, (error) => {
+        console.error("Lỗi khi tải lời chúc từ Firebase: ", error);
+        wishesList.innerHTML = '<p style="text-align:center; color:#D67D89">Chưa thể kết nối máy chủ Firebase. Bạn vui lòng thử lại sau nhé!</p>';
+    });
+
+    wishForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const nameInput = document.getElementById('sender-name');
@@ -159,13 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.style.opacity = '0.7';
         submitBtn.disabled = true;
 
-        setTimeout(() => {
-            const newWish = { name, message, time: new Date().toISOString() };
-            const currentWishes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            currentWishes.push(newWish);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(currentWishes));
+        try {
+            await addDoc(wishesCol, {
+                name: name,
+                message: message,
+                time: new Date().toISOString()
+            });
 
-            renderWishes(currentWishes);
             wishForm.reset();
             
             // Success state
@@ -181,7 +198,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = false;
             }, 3000);
             
-        }, 800);
+        } catch (error) {
+            console.error("Lỗi khi gửi lời chúc: ", error);
+            submitBtn.innerHTML = '<span>Lỗi kết nối! Thử lại</span>';
+            submitBtn.style.opacity = '1';
+            setTimeout(() => {
+                submitBtn.innerHTML = originalBtnContent;
+                submitBtn.disabled = false;
+            }, 3000);
+        }
     });
 
     function escapeHTML(str) {
@@ -281,6 +306,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener('scroll', updateActiveNavLink, { passive: true });
-
-    loadWishes();
 });
