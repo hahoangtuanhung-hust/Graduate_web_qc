@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Mới: Font sang trọng cho thiệp (Cormorant Infant & Great Vibes) và Inter cho văn bản nhỏ -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@300;400;500;600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.3">
+    <link rel="stylesheet" href="style.css?v=1.4">
 </head>
 <body>
     <!-- Interactive Envelope Opening Overlay Screen -->
@@ -58,6 +58,27 @@
         </div>
     </div>
 
+    <!-- Floating Glassmorphic Navigation Bar -->
+    <header class="nav-header">
+        <nav class="navbar" id="navbar" aria-label="Menu điều hướng chính">
+            <div class="nav-container">
+                <a href="#hero" class="nav-brand" aria-label="Về đầu trang">
+                    <span class="brand-monogram">QC</span>
+                    <span class="brand-name">Quỳnh Chi</span>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="#hero" class="nav-item active"><span class="nav-icon">🎓</span><span class="nav-text">Thư Mời</span></a></li>
+                    <li><a href="#event-details" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-text">Thời Gian</span></a></li>
+                    <li><a href="#countdown" class="nav-item"><span class="nav-icon">⏳</span><span class="nav-text">Đếm Ngược</span></a></li>
+                    <li><a href="#map" class="nav-item"><span class="nav-icon">📍</span><span class="nav-text">Bản Đồ</span></a></li>
+                    <li><a href="#gallery" class="nav-item"><span class="nav-icon">📸</span><span class="nav-text">Kỷ Niệm</span></a></li>
+                    <li><a href="#wishes" class="nav-item"><span class="nav-icon">💌</span><span class="nav-text">Lời Chúc</span></a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
     <!-- Background Elements -->
     <div class="bg-shape shape-1"></div>
     <div class="bg-shape shape-2"></div>
@@ -76,7 +97,7 @@
 
     <!-- Main Content -->
     <main class="invitation-wrapper">
-        <header class="hero section-padding">
+        <header class="hero section-padding" id="hero">
             <div class="hero-content fade-up">
                 <p class="subtitle tracking-widest">Thư Mời Tham Dự</p>
                 <h1 class="title">Lễ Tốt Nghiệp</h1>
@@ -99,7 +120,7 @@
             </div>
         </header>
 
-        <section class="event-details section-padding">
+        <section class="event-details section-padding" id="event-details">
             <div class="glass-card event-card fade-up">
                 <div class="invite-message">
                     <span class="icon-hat">🎓</span>
@@ -130,7 +151,7 @@
         </section>
 
         <!-- Countdown Section -->
-        <section class="countdown-section section-padding">
+        <section class="countdown-section section-padding" id="countdown">
             <div class="glass-card countdown-card fade-up">
                 <p class="countdown-tagline">CÙNG ĐẾM NGƯỢC ĐẾN NGÀY ĐẶC BIỆT</p>
                 <h3 class="countdown-title">Khoảnh Khắc Tốt Nghiệp</h3>
@@ -161,7 +182,7 @@
         </section>
 
         <!-- Location & Map Section -->
-        <section class="location-map-section section-padding">
+        <section class="location-map-section section-padding" id="map">
             <div class="glass-card map-card fade-up">
                 <span class="icon-location">📍</span>
                 <p class="location-tagline">HƯỚNG DẪN ĐƯỜNG ĐI</p>
@@ -201,7 +222,7 @@
             </div>
         </section>
 
-        <section class="memories-gallery section-padding">
+        <section class="memories-gallery section-padding" id="gallery">
             <div class="polaroid-grid">
                 <div class="polaroid-card rotate-left fade-up">
                     <div class="polaroid-img-wrapper">
@@ -219,7 +240,7 @@
             </div>
         </section>
 
-        <section class="wishes-section section-padding">
+        <section class="wishes-section section-padding" id="wishes">
             <div class="guestbook-container">
                 <h3 class="section-heading fade-up">Sổ Lưu Bút</h3>
                 <p class="section-subheading fade-up">Hãy để lại một vài lời nhắn gửi yêu thương cho chặng đường sắp tới của Chi nhé!</p>
@@ -255,6 +276,6 @@
         </footer>
     </main>
 
-    <script src="script.js?v=1.3"></script>
+    <script src="script.js?v=1.4"></script>
 </body>
 </html>

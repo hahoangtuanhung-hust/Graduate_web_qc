@@ -254,5 +254,33 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
+    // 6. Navigation Bar Scrollspy Logic
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('main > header, main > section');
+
+    function updateActiveNavLink() {
+        let currentSectionId = '';
+        const scrollPosition = window.scrollY + 140; // Offset for floating navbar
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                currentSectionId = section.getAttribute('id');
+            }
+        });
+
+        if (currentSectionId) {
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${currentSectionId}`) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    }
+
+    window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+
     loadWishes();
 });
