@@ -8,9 +8,56 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Mới: Font sang trọng cho thiệp (Cormorant Infant & Great Vibes) và Inter cho văn bản nhỏ -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@300;400;500;600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.2">
+    <link rel="stylesheet" href="style.css?v=1.3">
 </head>
 <body>
+    <!-- Interactive Envelope Opening Overlay Screen -->
+    <div id="envelope-overlay" class="envelope-overlay">
+        <div class="envelope-ambient">
+            <div class="env-shape shape-a"></div>
+            <div class="env-shape shape-b"></div>
+        </div>
+
+        <div class="envelope-container" id="open-envelope-trigger">
+            <div class="envelope-wrapper">
+                <!-- Envelope Back -->
+                <div class="envelope-back"></div>
+                
+                <!-- Inner Letter Card Peeking -->
+                <div class="envelope-letter">
+                    <p class="letter-tag">THƯ MỜI LỄ TỐT NGHIỆP</p>
+                    <h2 class="letter-name">Lương Quỳnh Chi</h2>
+                    <div class="letter-line"></div>
+                    <p class="letter-sub">Bachelor of Marketing • K64</p>
+                    <p class="letter-date">22.08.2026 • ĐH Kinh Tế Quốc Dân</p>
+                </div>
+
+                <!-- Envelope Front Body & Flaps -->
+                <div class="envelope-front-pocket"></div>
+                <div class="envelope-flap"></div>
+
+                <!-- Wax Seal with Ribbon -->
+                <div class="wax-seal-wrapper">
+                    <div class="seal-ribbon"></div>
+                    <div class="wax-seal">
+                        <div class="seal-inner">
+                            <span class="seal-initials">QC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tap to Open Hint -->
+            <div class="envelope-action">
+                <button class="btn-open-invitation" type="button" aria-label="Mở thư mời">
+                    <span class="pulse-sparkle">💌</span>
+                    <span class="btn-open-text">Chạm để mở thư mời</span>
+                    <span class="pulse-sparkle">✨</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Background Elements -->
     <div class="bg-shape shape-1"></div>
     <div class="bg-shape shape-2"></div>
@@ -208,6 +255,6 @@
         </footer>
     </main>
 
-    <script src="script.js?v=1.2"></script>
+    <script src="script.js?v=1.3"></script>
 </body>
 </html>

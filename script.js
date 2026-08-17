@@ -18,7 +18,43 @@ document.addEventListener('DOMContentLoaded', () => {
     
     fadeElements.forEach(el => appearOnScroll.observe(el));
 
-    // 2. Background Music Logic
+    // 2. Interactive Envelope Opening Logic
+    const envelopeOverlay = document.getElementById('envelope-overlay');
+    const envelopeTrigger = document.getElementById('open-envelope-trigger');
+    let hasOpened = false;
+
+    if (envelopeTrigger && envelopeOverlay) {
+        envelopeTrigger.addEventListener('click', () => {
+            if (hasOpened) return;
+            hasOpened = true;
+
+            // Trigger Envelope opening animation
+            envelopeTrigger.classList.add('opening');
+
+            // Play background music automatically upon opening
+            if (bgMusic) {
+                bgMusic.volume = 0.5;
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    if (musicPlayer) musicPlayer.classList.add('playing');
+                }).catch(e => console.log("Music play blocked:", e));
+            }
+
+            // Confetti explosion effect
+            createElegantConfetti();
+
+            // After envelope opening animation finishes, fade out overlay
+            setTimeout(() => {
+                envelopeOverlay.classList.add('hide-envelope');
+                
+                // Trigger reveal for hero elements
+                const heroElements = document.querySelectorAll('.hero .fade-up');
+                heroElements.forEach(el => el.classList.add('visible'));
+            }, 900);
+        });
+    }
+
+    // 3. Background Music Logic
     const musicPlayer = document.getElementById('music-toggle');
     const bgMusic = document.getElementById('bg-music');
     let isPlaying = false;
