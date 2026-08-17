@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lễ Tốt Nghiệp - Lương Quỳnh Chi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Mới: Font sang trọng cho thiệp (Cormorant Infant & Great Vibes) và Inter cho văn bản nhỏ -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@300;400;500;600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+    
+    <!-- Music Player (Floating) -->
+    <div class="music-player" id="music-toggle" title="Bật/Tắt Nhạc">
+        <div class="disc">
+            <span class="music-icon">🎵</span>
+        </div>
+        <audio id="bg-music" loop>
+            <!-- Sử dụng nhạc nền nhẹ nhàng (Royalty-free) -->
+            <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b2f901a1db.mp3?filename=piano-moment-9835.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <!-- Main Content -->
+    <main class="invitation-wrapper">
+        <header class="hero section-padding">
+            <div class="hero-content fade-up">
+                <p class="subtitle tracking-widest">Thư Mời Tham Dự</p>
+                <h1 class="title">Lễ Tốt Nghiệp</h1>
+                <h2 class="name-signature">Lương Quỳnh Chi</h2>
+                
+                <div class="elegant-divider">
+                    <span class="diamond"></span>
+                </div>
+                
+                <div class="degree-info">
+                    <p class="degree-title">Bachelor of Marketing • K64</p>
+                    <p class="university-name">Đại học Kinh tế Quốc dân (NEU)</p>
+                </div>
+            </div>
+            
+            <div class="hero-image-container fade-up delay-1">
+                <div class="image-frame glass-effect">
+                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800" alt="Lương Quỳnh Chi" class="hero-img">
+                </div>
+            </div>
+        </header>
+
+        <section class="event-details section-padding">
+            <div class="glass-card event-card fade-up">
+                <div class="invite-message">
+                    <span class="icon-hat">🎓</span>
+                    <p class="greeting">Thân mời</p>
+                    <p class="guest-highlight">Gia đình, Thầy cô & Bạn bè</p>
+                    <p class="greeting-sub">Đến tham dự chung vui Lễ Tốt Nghiệp cùng Chi</p>
+                </div>
+
+                <div class="info-layout">
+                    <div class="info-block">
+                        <span class="info-label">THỜI GIAN</span>
+                        <div class="time-primary">
+                            <span class="date">22.08.2026</span>
+                            <span class="separator">|</span>
+                            <span class="time">10:00 - 12:00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="elegant-divider-vertical"></div>
+
+                    <div class="info-block">
+                        <span class="info-label">ĐỊA ĐIỂM</span>
+                        <p class="location-primary">ĐH KINH TẾ QUỐC DÂN</p>
+                        <p class="location-sub">Cổng Phố Vọng / Cổng Trần Đại Nghĩa,<br>phường Bạch Mai, HN</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countdown Section -->
+        <section class="countdown-section section-padding">
+            <div class="glass-card countdown-card fade-up">
+                <p class="countdown-tagline">CÙNG ĐẾM NGƯỢC ĐẾN NGÀY ĐẶC BIỆT</p>
+                <h3 class="countdown-title">Khoảnh Khắc Tốt Nghiệp</h3>
+                
+                <div class="countdown-grid" id="countdown-timer">
+                    <div class="time-card">
+                        <div class="time-number" id="cd-days">00</div>
+                        <span class="time-unit">Ngày</span>
+                    </div>
+                    <div class="time-divider">:</div>
+                    <div class="time-card">
+                        <div class="time-number" id="cd-hours">00</div>
+                        <span class="time-unit">Giờ</span>
+                    </div>
+                    <div class="time-divider">:</div>
+                    <div class="time-card">
+                        <div class="time-number" id="cd-minutes">00</div>
+                        <span class="time-unit">Phút</span>
+                    </div>
+                    <div class="time-divider">:</div>
+                    <div class="time-card highlight-sec">
+                        <div class="time-number" id="cd-seconds">00</div>
+                        <span class="time-unit">Giây</span>
+                    </div>
+                </div>
+                <p class="countdown-note" id="countdown-status">✨ Hẹn gặp mọi người vào 10:00 ngày 22.08.2026 nhé! ✨</p>
+            </div>
+        </section>
+
+        <section class="memories-gallery section-padding">
+            <div class="polaroid-grid">
+                <div class="polaroid-card rotate-left fade-up">
+                    <div class="polaroid-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=400" alt="Kỉ niệm 1">
+                    </div>
+                    <p class="polaroid-caption">A chapter closed...</p>
+                </div>
+                
+                <div class="polaroid-card rotate-right fade-up delay-1">
+                    <div class="polaroid-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?auto=format&fit=crop&q=80&w=400" alt="Kỉ niệm 2">
+                    </div>
+                    <p class="polaroid-caption">...A bright journey begins</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="wishes-section section-padding">
+            <div class="guestbook-container">
+                <h3 class="section-heading fade-up">Sổ Lưu Bút</h3>
+                <p class="section-subheading fade-up">Hãy để lại một vài lời nhắn gửi yêu thương cho chặng đường sắp tới của Chi nhé!</p>
+                
+                <form id="wish-form" class="glass-card wish-form fade-up">
+                    <div class="form-group">
+                        <label for="sender-name">Tên của bạn</label>
+                        <input type="text" id="sender-name" class="input-field" placeholder="Ví dụ: Anh Hùng, Bé Na..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Lời nhắn nhủ</label>
+                        <textarea id="message" rows="4" class="input-field" placeholder="Gửi gắm những lời chúc tốt đẹp nhất..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span>Gửi Lời Chúc</span>
+                        <span class="btn-icon">💌</span>
+                    </button>
+                </form>
+
+                <div class="wishes-timeline fade-up" id="wishes-list">
+                    <!-- Javascript generates wishes here -->
+                </div>
+            </div>
+        </section>
+
+        <footer class="contact-footer section-padding fade-up">
+            <div class="contact-box glass-card">
+                <div class="phone-icon">📞</div>
+                <p class="contact-text">Reng: <a href="tel:0392197030" class="highlight-text">0392.197.030</a> (qchi)</p>
+                <p class="contact-subtext">Hoặc gọi em qua Mess / Zalo nha 💕</p>
+            </div>
+            <p class="copyright">Designed with love for Lương Quỳnh Chi's Graduation</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
