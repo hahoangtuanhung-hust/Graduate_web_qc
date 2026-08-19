@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const localReactions = JSON.parse(localStorage.getItem('quynhchi_reactions') || '{}');
         const oldReaction = localReactions[wishId];
         
-        if (oldReaction === type) return; 
+        const isRemoving = oldReaction === type;
         
         const wishIndex = allWishes.findIndex(w => w.id === wishId);
         if (wishIndex !== -1) {
@@ -178,11 +178,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (oldReaction) {
                 allWishes[wishIndex].reactions[oldReaction]--;
             }
-            allWishes[wishIndex].reactions[type] = (allWishes[wishIndex].reactions[type] || 0) + 1;
+            if (!isRemoving) {
+                allWishes[wishIndex].reactions[type] = (allWishes[wishIndex].reactions[type] || 0) + 1;
+            }
             renderWishesPage();
         }
 
-        localReactions[wishId] = type;
+        if (isRemoving) {
+            delete localReactions[wishId];
+        } else {
+            localReactions[wishId] = type;
+        }
         localStorage.setItem('quynhchi_reactions', JSON.stringify(localReactions));
 
         try {
@@ -191,7 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (oldReaction) {
                 updates[`reactions.${oldReaction}`] = increment(-1);
             }
-            updates[`reactions.${type}`] = increment(1);
+            if (!isRemoving) {
+                updates[`reactions.${type}`] = increment(1);
+            }
             await updateDoc(wishRef, updates);
         } catch (error) {
             console.error("Error updating reaction:", error);
