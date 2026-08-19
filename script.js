@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBS_hA2xSg_cafIRB0pmGevmZQ6X4gI-cU",
@@ -142,6 +142,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const REACTION_TYPES = {
+        like: '👍',
+        love: '❤️',
+        haha: '😂',
+        wow: '😮',
+        sad: '😢',
+        angry: '😡'
+    };
+
+    function getReactionSummary(reactions) {
+        if (!reactions) return { count: 0, icons: [] };
+        let total = 0;
+        const icons = [];
+        const sorted = Object.entries(reactions)
+            .filter(([_, count]) => count > 0)
+            .sort((a, b) => b[1] - a[1]);
+        
+        sorted.forEach(([type, count]) => {
+            total += count;
+            if (icons.length < 3) icons.push(REACTION_TYPES[type]);
+        });
+        return { count: total, icons };
+    }
+
+    window.handleReaction = async (wishId, type) => {
+        const localReactions = JSON.parse(localStorage.getItem('quynhchi_reactions') || '{}');
+        const oldReaction = localReactions[wishId];
+        
+        if (oldReaction === type) return; 
+        
+        const wishIndex = allWishes.findIndex(w => w.id === wishId);
+        if (wishIndex !== -1) {
+            if (!allWishes[wishIndex].reactions) allWishes[wishIndex].reactions = {};
+            if (oldReaction) {
+                allWishes[wishIndex].reactions[oldReaction]--;
+            }
+            allWishes[wishIndex].reactions[type] = (allWishes[wishIndex].reactions[type] || 0) + 1;
+            renderWishesPage();
+        }
+
+        localReactions[wishId] = type;
+        localStorage.setItem('quynhchi_reactions', JSON.stringify(localReactions));
+
+        try {
+            const wishRef = doc(db, "wishes", wishId);
+            const updates = {};
+            if (oldReaction) {
+                updates[`reactions.${oldReaction}`] = increment(-1);
+            }
+            updates[`reactions.${type}`] = increment(1);
+            await updateDoc(wishRef, updates);
+        } catch (error) {
+            console.error("Error updating reaction:", error);
+        }
+    };
+
     function renderWishesPage() {
         wishesList.innerHTML = '';
         
@@ -158,6 +214,27 @@ document.addEventListener('DOMContentLoaded', () => {
         wishesToShow.forEach(wish => {
             const wishEl = document.createElement('div');
             wishEl.className = 'wish-item';
+            
+            const localReactions = JSON.parse(localStorage.getItem('quynhchi_reactions') || '{}');
+            const userReaction = localReactions[wish.id];
+            const summary = getReactionSummary(wish.reactions);
+            
+            let iconsHtml = '';
+            summary.icons.forEach(icon => {
+                iconsHtml += `<span>${icon}</span>`;
+            });
+
+            const countsHtml = summary.count > 0 ? `
+                <div class="reaction-counts">
+                    <div class="top-icons">${iconsHtml}</div>
+                    <span>${summary.count}</span>
+                </div>
+            ` : '';
+
+            const btnText = userReaction ? 'Đã thả' : 'Thích';
+            const activeClass = userReaction ? 'active' : '';
+            const btnIcon = userReaction ? REACTION_TYPES[userReaction] : '🤍';
+
             wishEl.innerHTML = `
                 <div class="wish-header">
                     <span class="wish-author">${escapeHTML(wish.name)}</span>
@@ -165,6 +242,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="wish-content">
                     "${escapeHTML(wish.message).replace(/\n/g, '<br>')}"
+                </div>
+                <div class="wish-actions">
+                    <div class="reaction-btn-wrapper">
+                        <button class="reaction-trigger ${activeClass}">
+                            <span>${btnIcon}</span>
+                            <span>${btnText}</span>
+                        </button>
+                        <div class="reaction-box">
+                            <span class="reaction-icon" onclick="handleReaction('${wish.id}', 'like')" title="Thích">👍</span>
+                            <span class="reaction-icon" onclick="handleReaction('${wish.id}', 'love')" title="Yêu thích">❤️</span>
+                            <span class="reaction-icon" onclick="handleReaction('${wish.id}', 'haha')" title="Haha">😂</span>
+                            <span class="reaction-icon" onclick="handleReaction('${wish.id}', 'wow')" title="Wow">😮</span>
+                            <span class="reaction-icon" onclick="handleReaction('${wish.id}', 'sad')" title="Buồn">😢</span>
+                            <span class="reaction-icon" onclick="handleReaction('${wish.id}', 'angry')" title="Phẫn nộ">😡</span>
+                        </div>
+                    </div>
+                    ${countsHtml}
                 </div>
             `;
             wishesList.appendChild(wishEl);
@@ -199,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onSnapshot(q, (snapshot) => {
         allWishes = [];
         snapshot.forEach((doc) => {
-            allWishes.push(doc.data());
+            allWishes.push({ id: doc.id, ...doc.data() });
         });
         
         const newTotalPages = Math.ceil(allWishes.length / wishesPerPage) || 1;
